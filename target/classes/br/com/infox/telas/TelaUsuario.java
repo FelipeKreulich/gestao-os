@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
  * @author felip
  */
 public class TelaUsuario extends javax.swing.JInternalFrame {
-    
+
     Connection conexao = null;
     PreparedStatement pst = null;
     ResultSet rs = null;
@@ -22,7 +22,7 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         initComponents();
         conexao = ModuloConexao.conector();
     }
-    
+
     // Criando a função de consulta ao DB
     private void consultar() {
         String sql = "SELECT * FROM tbusuarios WHERE iduser=?";
@@ -49,7 +49,7 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-    
+
     // Criando função para adicionar usuários
     private void adicionar() {
         String sql = "INSERT INTO tbusuarios(iduser, usuario, fone, login, senha, perfil) VALUES(?, ?, ?, ?, ?, ?)";
@@ -65,7 +65,7 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
             // Validação dos campos obrigatórios
             if (((((txtUsuId.getText().isEmpty() || txtUsuNome.getText().isEmpty() || txtUsuLogin.getText().isEmpty() || getSenha.isEmpty() || cboUsuPerfil.getSelectedItem().toString().isEmpty()))))) {
                 JOptionPane.showMessageDialog(null, "Preencha todos os Campos Obrigatórios!");
-            } else {    
+            } else {
                 // Realizando o Update na Tabela Usuarios com os dados do form
                 // A estrutura abaixo confirma a inserção dos dados na tabela
                 int adicionado = pst.executeUpdate();
@@ -82,6 +82,65 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
             }
         } catch (Exception e) {
             JOptionPane.showConfirmDialog(null, e);
+        }
+    }
+
+    // Criando a função para alterar os dados dos usuários
+    private void alterar() {
+        String sql = "UPDATE tbusuarios SET usuario=?, fone=?, login=?, senha=?, perfil=? WHERE iduser=?";
+        try {
+            String getSenha = new String(txtUsuSenha.getPassword());
+            pst = conexao.prepareStatement(sql);
+            pst.setString(1, txtUsuNome.getText());
+            pst.setString(2, txtUsuFone.getText());
+            pst.setString(3, txtUsuLogin.getText());
+            pst.setString(4, getSenha);
+            pst.setString(5, cboUsuPerfil.getSelectedItem().toString());
+            pst.setString(6, txtUsuId.getText());
+            // Validação dos campos obrigatórios
+            if (((((txtUsuId.getText().isEmpty() || txtUsuNome.getText().isEmpty() || txtUsuLogin.getText().isEmpty() || getSenha.isEmpty() || cboUsuPerfil.getSelectedItem().toString().isEmpty()))))) {
+                JOptionPane.showMessageDialog(null, "Preencha todos os Campos Obrigatórios!");
+            } else {
+                // Realizando o Update na Tabela Usuarios com os dados do form
+                // A estrutura abaixo confirma a alteração dos dados na tabela
+                int adicionado = pst.executeUpdate();
+                if (adicionado > 0) {
+                    JOptionPane.showMessageDialog(null, "Dados do Usuário alterados com Sucesso!");
+                    txtUsuId.setText(null);
+                    txtUsuNome.setText(null);
+                    txtUsuFone.setText(null);
+                    txtUsuLogin.setText(null);
+                    txtUsuSenha.setText(null);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Ocorreu um erro ao alterar os dados do Usuário!");
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+    
+    // Criando função para remover usuários
+    private void remover() {
+        // a estrutura abaxio confirma a remoção do usuário
+        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja remover este usuário?", "Atenção", JOptionPane.YES_NO_OPTION);
+        if (confirma == JOptionPane.YES_OPTION) {
+            String sql = "DELETE FROM tbusuarios WHERE iduser=?";
+            try {
+                pst = conexao.prepareStatement(sql);
+                pst.setString(1, txtUsuId.getText());
+                int apagado = pst.executeUpdate();
+                if (apagado > 0) {
+                    JOptionPane.showMessageDialog(null, "Usuário removido com Sucesso!");
+                    txtUsuId.setText(null);
+                    txtUsuNome.setText(null);
+                    txtUsuFone.setText(null);
+                    txtUsuLogin.setText(null);
+                    txtUsuSenha.setText(null);
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+            }
         }
     }
 
@@ -156,11 +215,21 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         btnUsuUpdate.setToolTipText("Atualizar");
         btnUsuUpdate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnUsuUpdate.setPreferredSize(new java.awt.Dimension(80, 80));
+        btnUsuUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUsuUpdateActionPerformed(evt);
+            }
+        });
 
         btnUsuDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/infox/icones/delete.png"))); // NOI18N
         btnUsuDelete.setToolTipText("Deletar");
         btnUsuDelete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnUsuDelete.setPreferredSize(new java.awt.Dimension(80, 80));
+        btnUsuDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUsuDeleteActionPerformed(evt);
+            }
+        });
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel7.setText("* Campos Obrigatórios");
@@ -266,6 +335,16 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
     private void txtUsuSenhaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsuSenhaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtUsuSenhaActionPerformed
+
+    private void btnUsuUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuUpdateActionPerformed
+        // Chama a função de Alterar
+        alterar();
+    }//GEN-LAST:event_btnUsuUpdateActionPerformed
+
+    private void btnUsuDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuDeleteActionPerformed
+        // Chama a função de Remover
+        remover();
+    }//GEN-LAST:event_btnUsuDeleteActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnUsuCreate;
