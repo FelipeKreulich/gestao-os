@@ -18,8 +18,8 @@ public class ModuloConexao {
         // Chama o driver responsável pela conexão do DB
         String driver = "com.mysql.cj.jdbc.Driver";
         // Armazenando informações referentes ao DB
-        String URL = "jdbc:mysql://localhost:3306/dbinfox";
-        String USER = "root";
+        String URL = "jdbc:mysql://localhost:3306/dbinfox?characterEncoding=utf-8";
+        String USER = "dba";
         String SENHA = "Felipek2002@";
         
         // Estabelecendo conexão com o DB com Try Catch

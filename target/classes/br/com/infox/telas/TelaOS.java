@@ -70,7 +70,9 @@ public class TelaOS extends javax.swing.JInternalFrame {
                 int adicionado = pst.executeUpdate();
                 if (adicionado > 0) {
                     JOptionPane.showMessageDialog(null, "OS emitida com Sucesso!");
-                    limpar();
+                    btnOsAdicionar.setEnabled(false);
+                    btnOsPesquisar.setEnabled(false);
+                    btnOsImprimir.setEnabled(true);
                 }
             }
         } catch (Exception e) {
@@ -82,7 +84,7 @@ public class TelaOS extends javax.swing.JInternalFrame {
     private void pesquisar_os() {
         // Cria uma caixa de entrada do tipo JOptionPane
         String num_os = JOptionPane.showInputDialog("Número da OS");
-        String sql = "SELECT * FROM tbos WHERE os=" + num_os;
+        String sql = "SELECT os,date_format(data_os, '%d/%m/%Y - %H:%i'), tipo, situacao, equipamento, defeito, servico, tecnico, valor, idcli FROM tbos WHERE os=" + num_os;
         try {
             pst = conexao.prepareStatement(sql);
             rs = pst.executeQuery();
@@ -106,11 +108,16 @@ public class TelaOS extends javax.swing.JInternalFrame {
                 txtOsValor.setText(rs.getString(9));
                 txtCliId.setText(rs.getString(10));
                 // Evitando problemas
+                btnOsPesquisar.setEnabled(false);
                 btnOsAdicionar.setEnabled(false);
                 txtCliPesquisar.setEnabled(false);
                 txtCliNome.setVisible(false);
                 txtCliFone.setVisible(false);
                 txtCliEmail.setVisible(false);
+                // Ativando
+                btnOsAlterar.setEnabled(true);
+                btnOsExcluir.setEnabled(true);
+                btnOsImprimir.setEnabled(true);
             } else {
                 JOptionPane.showMessageDialog(null, "OS não cadastrada!");
             }
@@ -170,6 +177,7 @@ public class TelaOS extends javax.swing.JInternalFrame {
 
     // Limpar campos e habilitar botões
     private void limpar() {
+        // limpar os campos
         cboOsSit.setSelectedItem(" ");
         txtOs.setText(null);
         txtData.setText(null);
@@ -181,6 +189,7 @@ public class TelaOS extends javax.swing.JInternalFrame {
         txtOsValor.setText(null);
         // Habilitando objetos
         btnOsAdicionar.setEnabled(true);
+        btnOsPesquisar.setEnabled(true);
         txtCliPesquisar.setEnabled(true);
         txtCliNome.setVisible(true);
         txtCliFone.setVisible(true);
