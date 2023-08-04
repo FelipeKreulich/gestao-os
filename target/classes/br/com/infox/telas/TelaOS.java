@@ -6,7 +6,11 @@ package br.com.infox.telas;
 
 import java.sql.*;
 import br.com.infox.dal.ModuloConexao;
+import java.util.HashMap;
 import javax.swing.JOptionPane;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -64,7 +68,7 @@ public class TelaOS extends javax.swing.JInternalFrame {
             pst.setString(7, txtOsValor.getText().replace(",", "."));
             pst.setString(8, txtCliId.getText());
             // validacao dos campos obrigatórios
-            if ((((txtCliId.getText().isEmpty() || txtOsEquip.getText().isEmpty() || txtOsDef.getText().isEmpty() || cboOsSit.getSelectedItem().equals(" ") )))) {
+            if ((((txtCliId.getText().isEmpty() || txtOsEquip.getText().isEmpty() || txtOsDef.getText().isEmpty() || cboOsSit.getSelectedItem().equals(" "))))) {
                 JOptionPane.showMessageDialog(null, "Preencha todos os campos obrigatórios!");
             } else {
                 int adicionado = pst.executeUpdate();
@@ -142,7 +146,7 @@ public class TelaOS extends javax.swing.JInternalFrame {
             pst.setString(7, txtOsValor.getText().replace(",", "."));
             pst.setString(8, txtOs.getText());
             // validacao dos campos obrigatórios
-            if ((((txtCliId.getText().isEmpty() || txtOsEquip.getText().isEmpty() || txtOsDef.getText().isEmpty() || cboOsSit.getSelectedItem().equals(" ") )))) {
+            if ((((txtCliId.getText().isEmpty() || txtOsEquip.getText().isEmpty() || txtOsDef.getText().isEmpty() || cboOsSit.getSelectedItem().equals(" "))))) {
                 JOptionPane.showMessageDialog(null, "Preencha todos os campos obrigatórios!");
             } else {
                 int adicionado = pst.executeUpdate();
@@ -169,6 +173,26 @@ public class TelaOS extends javax.swing.JInternalFrame {
                     JOptionPane.showMessageDialog(null, "OS excluída com Sucesso!");
                     limpar();
                 }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+            }
+        }
+    }
+
+    // Criando função para imprimir uma OS
+    private void imprimir_os() {
+        // Chama a tela de OS
+        int confirma = JOptionPane.showConfirmDialog(null, "Confirma a Impressão desta OS?", "Atenção", JOptionPane.YES_NO_OPTION);
+        if (confirma == JOptionPane.YES_OPTION) {
+            // Imprimindo relatório com o framework JasperReport
+            try {
+                // Usando Hashmap para criar um filtro
+                HashMap filtro = new HashMap();
+                filtro.put("os", Integer.parseInt(txtOs.getText()));
+                // Usando a classe JasperPrint para preparar a impressão da OS
+                JasperPrint print = JasperFillManager.fillReport("C:/reports/report1.jasper", filtro, conexao);
+                // Exibindo o relatório através da Classe JasperViewer
+                JasperViewer.viewReport(print, false);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e);
             }
@@ -448,6 +472,11 @@ public class TelaOS extends javax.swing.JInternalFrame {
         btnOsImprimir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnOsImprimir.setEnabled(false);
         btnOsImprimir.setPreferredSize(new java.awt.Dimension(80, 80));
+        btnOsImprimir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOsImprimirActionPerformed(evt);
+            }
+        });
 
         jLabel10.setText("Valor Total");
 
@@ -584,6 +613,11 @@ public class TelaOS extends javax.swing.JInternalFrame {
         // Chama a função excluir OS
         excluir_os();
     }//GEN-LAST:event_btnOsExcluirActionPerformed
+
+    private void btnOsImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOsImprimirActionPerformed
+        // Chama a função de imprimir OS
+        imprimir_os();
+    }//GEN-LAST:event_btnOsImprimirActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
