@@ -1,6 +1,25 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
+ * The MIT License
+ *
+ * Copyright 2023 Felipe Kreulich.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 package br.com.infox.telas;
 
@@ -10,7 +29,8 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author felip
+ * @author Felipe Kreulich
+ * @version 1.1
  */
 public class TelaUsuario extends javax.swing.JInternalFrame {
 
@@ -23,7 +43,6 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         conexao = ModuloConexao.conector();
     }
 
-    // Criando a função de consulta ao DB
     private void consultar() {
         String sql = "SELECT * FROM tbusuarios WHERE iduser=?";
         try {
@@ -35,11 +54,9 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
                 txtUsuFone.setText(rs.getString(3));
                 txtUsuLogin.setText(rs.getString(4));
                 txtUsuSenha.setText(rs.getString(5));
-                // Se refere ao ComboBox
                 cboUsuPerfil.setSelectedItem(rs.getString(6));
             } else {
                 JOptionPane.showMessageDialog(null, "Usuário não encontrado ou Inexistente!");
-                // Limpando os campos do form após a consulta se não existir o usuário
                 txtUsuNome.setText(null);
                 txtUsuFone.setText(null);
                 txtUsuLogin.setText(null);
@@ -50,7 +67,6 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         }
     }
 
-    // Criando função para adicionar usuários
     private void adicionar() {
         String sql = "INSERT INTO tbusuarios(iduser, usuario, fone, login, senha, perfil) VALUES(?, ?, ?, ?, ?, ?)";
         try {
@@ -62,12 +78,9 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
             pst.setString(4, txtUsuLogin.getText());
             pst.setString(5, getSenha);
             pst.setString(6, cboUsuPerfil.getSelectedItem().toString());
-            // Validação dos campos obrigatórios
             if (((((txtUsuId.getText().isEmpty() || txtUsuNome.getText().isEmpty() || txtUsuLogin.getText().isEmpty() || getSenha.isEmpty() || cboUsuPerfil.getSelectedItem().toString().isEmpty()))))) {
                 JOptionPane.showMessageDialog(null, "Preencha todos os Campos Obrigatórios!");
             } else {
-                // Realizando o Update na Tabela Usuarios com os dados do form
-                // A estrutura abaixo confirma a inserção dos dados na tabela
                 int adicionado = pst.executeUpdate();
                 if (adicionado > 0) {
                     JOptionPane.showMessageDialog(null, "Usuário adicionado com Sucesso!");
@@ -85,7 +98,6 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         }
     }
 
-    // Criando a função para alterar os dados dos usuários
     private void alterar() {
         String sql = "UPDATE tbusuarios SET usuario=?, fone=?, login=?, senha=?, perfil=? WHERE iduser=?";
         try {
@@ -97,12 +109,9 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
             pst.setString(4, getSenha);
             pst.setString(5, cboUsuPerfil.getSelectedItem().toString());
             pst.setString(6, txtUsuId.getText());
-            // Validação dos campos obrigatórios
             if (((((txtUsuId.getText().isEmpty() || txtUsuNome.getText().isEmpty() || txtUsuLogin.getText().isEmpty() || getSenha.isEmpty() || cboUsuPerfil.getSelectedItem().toString().isEmpty()))))) {
                 JOptionPane.showMessageDialog(null, "Preencha todos os Campos Obrigatórios!");
             } else {
-                // Realizando o Update na Tabela Usuarios com os dados do form
-                // A estrutura abaixo confirma a alteração dos dados na tabela
                 int adicionado = pst.executeUpdate();
                 if (adicionado > 0) {
                     JOptionPane.showMessageDialog(null, "Dados do Usuário alterados com Sucesso!");
@@ -119,10 +128,8 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-    
-    // Criando função para remover usuários
+
     private void remover() {
-        // a estrutura abaxio confirma a remoção do usuário
         int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja remover este usuário?", "Atenção", JOptionPane.YES_NO_OPTION);
         if (confirma == JOptionPane.YES_OPTION) {
             String sql = "DELETE FROM tbusuarios WHERE iduser=?";
