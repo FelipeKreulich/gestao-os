@@ -1,6 +1,25 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ * The MIT License
+ *
+ * Copyright 2023 Felipe Kreulich.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 package br.com.infox.telas;
 
@@ -12,7 +31,8 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author felip
+ * @author Felipe Kreulich
+ * @version 1.1
  */
 public class TelaLogin extends javax.swing.JFrame {
 
@@ -21,30 +41,22 @@ public class TelaLogin extends javax.swing.JFrame {
     ResultSet rs = null;
 
     public void logar() {
-        // o "?" é substituido pelos conteudos das variaveis
         String sql = "SELECT * FROM tbusuarios WHERE login=? and senha=?";
         try {
-            // Capturando o que está sendo digitado no form de login
             String getSenha = new String(txtSenha.getPassword());
             pst = conexao.prepareStatement(sql);
             pst.setString(1, txtUsuario.getText());
             pst.setString(2, getSenha);
-            // Executando as querys
             rs = pst.executeQuery();
-            // Se existir usuário e senha correspondente
             if (rs.next()) {
-                // Obtenção do conteúdo do campo Perfil da Tabela tbusuarios
                 String perfil = rs.getString(6);
-                // Estrutura de decisão do perfil do usuário
                 if (perfil.equals("admin")) {
-                    //Exibindo a tela principal caso ocorra o login do usuário
                     TelaPrincipal principal = new TelaPrincipal();
                     principal.setVisible(true);
                     TelaPrincipal.MenRel.setEnabled(true);
                     TelaPrincipal.MenCadUsu.setEnabled(true);
                     TelaPrincipal.lblUsuario.setText(rs.getString(2));
                     TelaPrincipal.lblUsuario.setForeground(Color.red);
-                    // Fecha o Formulário de Login
                     this.dispose();
                 } else {
                     TelaPrincipal principal = new TelaPrincipal();
@@ -52,7 +64,6 @@ public class TelaLogin extends javax.swing.JFrame {
                     TelaPrincipal.lblUsuario.setText(rs.getString(2));
                     this.dispose();
                 }
-                // Encerra a conexão com o DB por fim de segurança
                 conexao.close();
             } else {
                 JOptionPane.showMessageDialog(null, "Usuário e/ou Senha Inválido(s).");
@@ -65,7 +76,6 @@ public class TelaLogin extends javax.swing.JFrame {
     public TelaLogin() {
         initComponents();
         conexao = ModuloConexao.conector();
-        // Criando componente que exibe o status do DB
         if (conexao != null) {
             lblStatus.setIcon(new ImageIcon(getClass().getResource("/br/com/infox/icones/dbok.png")));
         } else {
